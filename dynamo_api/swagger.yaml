@@ -5,6 +5,11 @@ paths:
   /users:
     get:
       summary: This endpoint returns a user
+      parameters:
+         - name: userId
+            in: path
+            required: true
+            description: user ID
       x-amazon-apigateway-integration:
         type: "aws_proxy"
         uri:
