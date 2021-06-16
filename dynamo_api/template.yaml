@@ -1,0 +1,57 @@
+AWSTemplateFormatVersion : '2010-09-09'
+Transform:
+  - AWS::Serverless-2016-10-31
+
+Description: My Lambda Resources
+Resources:
+    MyLambda1: 
+        Type: AWS::Serverless::Function
+        Properties:
+            FunctionName: getUser
+            Environment:
+              Variables:
+                MY_DATABASE: "dynamoTable"
+            Handler: users.getUser
+            Runtime: python3.6
+            CodeUri: package/
+            
+    MyLambda1: 
+        Type: AWS::Serverless::Function
+        Properties:
+            FunctionName: putUser
+            Environment:
+              Variables:
+                MY_DATABASE: "dynamoTable"
+            Handler: users.putUser
+            Runtime: python3.6
+            CodeUri: package/
+            
+    MyTable:
+    Type: AWS::Serverless::SimpleTable
+    Properties:
+      TableName: my-user-app
+      PrimaryKey:
+        Name: pk
+        Type: String
+      ProvisionedThroughput:
+        ReadCapacityUnits: 5
+        WriteCapacityUnits: 5
+            
+  
+ # MyTable:
+ #   Type: AWS::DynamoDB::Table
+  #  Properties:
+   #   TableName: "my-users"
+    #  ProvisionedThroughput:
+     #   ReadCapacityUnits: 5
+      #  WriteCapacityUnits: 5
+  #    KeySchema:
+   #     - AttributeName: "pk"
+    #      KeyType: "HASH"
+     #   - AttributeName: "sk"
+      #    KeyType: "RANGE"
+  #    AttributeDefinitions:
+   #     - AttributeName: "pk"
+    #      AttributeType: "S"
+     #   - AttributeName: "sk"
+      #    AttributeType: "N"
