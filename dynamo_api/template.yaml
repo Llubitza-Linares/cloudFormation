@@ -10,7 +10,7 @@ Resources:
             FunctionName: getUser
             Environment:
               Variables:
-                MY_DATABASE: "dynamoTable"
+                USERS_TABLE: !Ref MyTable
             Handler: users.getUser
             Runtime: python3.6
             CodeUri: package/
@@ -21,10 +21,18 @@ Resources:
             FunctionName: putUser
             Environment:
               Variables:
-                MY_DATABASE: "dynamoTable"
+                USERS_TABLE: !Ref MyTable
             Handler: users.putUser
             Runtime: python3.6
             CodeUri: package/
+            
+            Events:
+            GetUsers:
+              Type: Api
+              Properties:
+                RestApiId: !Ref MyAPI
+                Path: /users
+                Method: GET
             
     MyTable:
     Type: AWS::Serverless::SimpleTable
@@ -36,22 +44,15 @@ Resources:
       ProvisionedThroughput:
         ReadCapacityUnits: 5
         WriteCapacityUnits: 5
-            
   
- # MyTable:
- #   Type: AWS::DynamoDB::Table
-  #  Properties:
-   #   TableName: "my-users"
-    #  ProvisionedThroughput:
-     #   ReadCapacityUnits: 5
-      #  WriteCapacityUnits: 5
-  #    KeySchema:
-   #     - AttributeName: "pk"
-    #      KeyType: "HASH"
-     #   - AttributeName: "sk"
-      #    KeyType: "RANGE"
-  #    AttributeDefinitions:
-   #     - AttributeName: "pk"
-    #      AttributeType: "S"
-     #   - AttributeName: "sk"
-      #    AttributeType: "N"
+  
+    MyAPI:
+    Type: AWS::Serverless::Api
+    Properties:
+      Name: my-api-gateway
+      StageName: prod
+      DefinitionBody:
+        Fn::Transform:
+          Name: AWS::Include
+          Parameters:
+            Location: swagger.yaml
